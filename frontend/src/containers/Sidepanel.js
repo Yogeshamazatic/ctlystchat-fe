@@ -1,5 +1,6 @@
 import React from 'react';
 import axios from 'axios';
+import axiosInstance from '../apiIntercepter';
 import { Spin, Icon } from 'antd';
 import { connect } from 'react-redux';
 import Contact from '../components/Contact';
@@ -31,8 +32,10 @@ class Sidepanel extends React.Component {
         axios.defaults.headers = {
             "Content-Type": "application/json",
             Authorization: `Token ${token}`
+
         };
-        axios.get(`http://127.0.0.1:8000/chat/?username=${username}`)
+        console.log(token);
+        axiosInstance.get(`http://127.0.0.1:8000/api/1.0.0/justchat`)
         .then(res => this.setState({ chats: res.data }));
     }
 
