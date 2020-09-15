@@ -16,21 +16,23 @@ class WebSocketService {
   }
 
   connect(chatUrl) {
+    console.log(chatUrl, "urlllllllllll");
     const path = `${SOCKET_URL}/ws/chat/${chatUrl}/`;
     this.socketRef = new WebSocket(path);
     this.socketRef.onopen = () => {
       console.log("WebSocket open");
     };
-    this.socketRef.onmessage = e => {
+    this.socketRef.onmessage = (e) => {
+      console.log(e, "messssssssage");
       this.socketNewMessage(e.data);
     };
-    this.socketRef.onerror = e => {
-      console.log(e.message);
+    this.socketRef.onerror = (e) => {
+      // console.log(e.message);
     };
-    this.socketRef.onclose = () => {
-      console.log("WebSocket closed let's reopen");
-      this.connect();
-    };
+    // this.socketRef.onclose = () => {
+    //   console.log("WebSocket closed let's reopen");
+    //   this.connect();
+    // };
   }
 
   disconnect() {
@@ -55,7 +57,7 @@ class WebSocketService {
     this.sendMessage({
       command: "fetch_messages",
       username: username,
-      chatId: chatId
+      chatId: chatId,
     });
   }
 
@@ -64,7 +66,7 @@ class WebSocketService {
       command: "new_message",
       from: message.from,
       message: message.content,
-      chatId: message.chatId
+      chatId: message.chatId,
     });
   }
 

@@ -32,25 +32,25 @@ class Chat extends React.Component {
         console.log("wait for connection...");
         component.waitForSocketConnection(callback);
       }
-    }, 100);
+    }, 1000);
   }
 
-  messageChangeHandler = event => {
+  messageChangeHandler = (event) => {
     this.setState({ message: event.target.value });
   };
 
-  sendMessageHandler = e => {
+  sendMessageHandler = (e) => {
     e.preventDefault();
     const messageObject = {
       from: this.props.username,
       content: this.state.message,
-      chatId: this.props.match.params.chatID
+      chatId: this.props.match.params.chatID,
     };
     WebSocketInstance.newChatMessage(messageObject);
     this.setState({ message: "" });
   };
 
-  renderTimestamp = timestamp => {
+  renderTimestamp = (timestamp) => {
     let prefix = "";
     const timeDiff = Math.round(
       (new Date().getTime() - new Date(timestamp).getTime()) / 60000
@@ -73,7 +73,7 @@ class Chat extends React.Component {
     return prefix;
   };
 
-  renderMessages = messages => {
+  renderMessages = (messages) => {
     const currentUser = this.props.username;
     return messages.map((message, i, arr) => (
       <li
@@ -127,7 +127,7 @@ class Chat extends React.Component {
             {this.props.messages && this.renderMessages(this.props.messages)}
             <div
               style={{ float: "left", clear: "both" }}
-              ref={el => {
+              ref={(el) => {
                 this.messagesEnd = el;
               }}
             />
@@ -156,10 +156,10 @@ class Chat extends React.Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     username: state.auth.username,
-    messages: state.message.messages
+    messages: state.message.messages,
   };
 };
 

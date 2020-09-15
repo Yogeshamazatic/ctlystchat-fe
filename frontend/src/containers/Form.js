@@ -10,18 +10,19 @@ import { HOST_URL } from "../settings";
 const FormItem = Form.Item;
 
 function hasErrors(fieldsError) {
-  return Object.keys(fieldsError).some(field => fieldsError[field]);
+  return Object.keys(fieldsError).some((field) => fieldsError[field]);
 }
 
 class HorizontalAddChatForm extends React.Component {
   state = {
     usernames: [],
-    error: null
+    error: null,
   };
 
-  handleChange = value => {
+  handleChange = (value) => {
+    console.log(value);
     this.setState({
-      usernames: value
+      usernames: value,
     });
   };
 
@@ -29,32 +30,44 @@ class HorizontalAddChatForm extends React.Component {
     this.props.form.validateFields();
   }
 
-  handleSubmit = e => {
+  handleSubmit = (e) => {
     const { usernames } = this.state;
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
+      console.log(values);
       if (!err) {
         const combined = [...usernames, this.props.username];
         axios.defaults.xsrfHeaderName = "X-CSRFTOKEN";
         axios.defaults.xsrfCookieName = "csrftoken";
         axios.defaults.headers = {
           "Content-Type": "application/json",
-          Authorization: `Token ${this.props.token}`
+          Authorization: `Token ${this.props.token}`,
         };
+        console.log(combined, this.props);
         axios
-          .post(`${HOST_URL}/chat/create/`, {
-            messages: [],
-            participants: combined
-          })
-          .then(res => {
+          .post(
+            `${HOST_URL}/api/1.0.0/justchat/create/`,
+            {
+              id: "100",
+              messages: [],
+              participants: combined,
+            },
+            {
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Token ${localStorage.getItem("token")}`,
+              },
+            }
+          )
+          .then((res) => {
             this.props.history.push(`/${res.data.id}`);
             this.props.closeAddChatPopup();
             this.props.getUserChats(this.props.username, this.props.token);
           })
-          .catch(err => {
-            console.error(err);
+          .catch((err) => {
+            console.error(err.response);
             this.setState({
-              error: err
+              error: err,
             });
           });
       }
@@ -66,7 +79,7 @@ class HorizontalAddChatForm extends React.Component {
       getFieldDecorator,
       getFieldsError,
       getFieldError,
-      isFieldTouched
+      isFieldTouched,
     } = this.props.form;
 
     const userNameError =
@@ -83,15 +96,15 @@ class HorizontalAddChatForm extends React.Component {
               {
                 required: true,
                 message:
-                  "Please input the username of the person you want to chat with"
-              }
-            ]
+                  "Please input the username of the person you want to chat with",
+              },
+            ],
           })(
             <Select
               mode="tags"
               style={{ width: "100%" }}
               placeholder="Tags Mode"
-              onChange={this.handleChange}
+              onChange={(event) => this.handleChange(event)}
             >
               {[]}
             </Select>
@@ -113,24 +126,21 @@ class HorizontalAddChatForm extends React.Component {
 
 const AddChatForm = Form.create()(HorizontalAddChatForm);
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     token: state.auth.token,
-    username: state.auth.username
+    username: state.auth.username,
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     closeAddChatPopup: () => dispatch(navActions.closeAddChatPopup()),
     getUserChats: (username, token) =>
-      dispatch(messageActions.getUserChats(username, token))
+      dispatch(messageActions.getUserChats(username, token)),
   };
 };
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(AddChatForm)
+  connect(mapStateToProps, mapDispatchToProps)(AddChatForm)
 );

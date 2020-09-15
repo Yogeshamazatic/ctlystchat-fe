@@ -10,7 +10,7 @@ const antIcon = <Icon type="loading" style={{ fontSize: 24 }} spin />;
 
 class Sidepanel extends React.Component {
   state = {
-    loginForm: true
+    loginForm: true,
   };
 
   waitForAuthDetails() {
@@ -44,7 +44,7 @@ class Sidepanel extends React.Component {
     this.setState({ loginForm: !this.state.loginForm });
   };
 
-  authenticate = e => {
+  authenticate = (e) => {
     e.preventDefault();
     if (this.state.loginForm) {
       this.props.login(e.target.username.value, e.target.password.value);
@@ -59,17 +59,21 @@ class Sidepanel extends React.Component {
   };
 
   render() {
-    let activeChats = this.props.chats.map(c => {
-      return (
-        <Contact
-          key={c.id}
-          name="Harvey Specter"
-          picURL="http://emilcarlsson.se/assets/louislitt.png"
-          status="busy"
-          chatURL={`/${c.id}`}
-        />
-      );
-    });
+    let a = this.props.chats && this.props.chats.results;
+    console.log(a);
+    let activeChats =
+      a &&
+      a.map((c) => {
+        return (
+          <Contact
+            key={c.id}
+            name="Harvey Specter"
+            picURL="http://emilcarlsson.se/assets/louislitt.png"
+            status="busy"
+            chatURL={`/${c.id}`}
+          />
+        );
+      });
     return (
       <div id="sidepanel">
         <div id="profile">
@@ -178,17 +182,17 @@ class Sidepanel extends React.Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     isAuthenticated: state.auth.token !== null,
     loading: state.auth.loading,
     token: state.auth.token,
     username: state.auth.username,
-    chats: state.message.chats
+    chats: state.message.chats,
   };
 };
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     login: (userName, password) =>
       dispatch(actions.authLogin(userName, password)),
@@ -197,11 +201,8 @@ const mapDispatchToProps = dispatch => {
       dispatch(actions.authSignup(username, email, password1, password2)),
     addChat: () => dispatch(navActions.openAddChatPopup()),
     getUserChats: (username, token) =>
-      dispatch(messageActions.getUserChats(username, token))
+      dispatch(messageActions.getUserChats(username, token)),
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Sidepanel);
+export default connect(mapStateToProps, mapDispatchToProps)(Sidepanel);
