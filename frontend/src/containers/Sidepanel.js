@@ -60,20 +60,36 @@ class Sidepanel extends React.Component {
 
   render() {
     let a = this.props.chats && this.props.chats.results;
-    console.log(a);
+    console.log('aa',this.props);
     let activeChats =
       a &&
       a.map((c) => {
+        console.log('c', c)
         return (
+
           <Contact
             key={c.id}
-            name="Harvey Specter"
+            name={c.participants[1] || "username"} 
             picURL="http://emilcarlsson.se/assets/louislitt.png"
             status="busy"
             chatURL={`/${c.id}`}
           />
         );
       });
+  // render() {
+  //   // console.log(c)
+  // let activeChats = this.props.chats.map(c => {
+  //   return (
+  //     <h1>heeelll</h1>
+  //     // <Contact
+  //     //   key={c.id}
+  //     //   name="Harvey Specter"
+  //     //   picURL="http://emilcarlsson.se/assets/louislitt.png"
+  //     //   status="busy"
+  //     //   chatURL={`/${c.id}`}
+  //     // />
+  //   );
+  // });
     return (
       <div id="sidepanel">
         <div id="profile">
